@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -37,9 +35,10 @@ class GarminClient {
     Response auth_response = await dio.post('https://sso.garmin.com/sso/signin',
         queryParameters: {'service': 'https://connect.garmin.com/modern'},
         data: {'username': username, 'password': password, 'embed': 'false'},
-        options: Options(
-            contentType: ContentType.parse('application/x-www-form-urlencoded'),
-            headers: {'origin': 'https://sso.garmin.com'}));
+        options: Options(headers: {
+          'origin': 'https://sso.garmin.com',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }));
     if (auth_response.statusCode != 200) {
       throw GarminException('Login credentials not accepted');
     }
