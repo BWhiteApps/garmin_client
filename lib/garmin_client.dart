@@ -35,9 +35,9 @@ class GarminClient {
     Response auth_response = await dio.post('https://sso.garmin.com/sso/signin',
         queryParameters: {'service': 'https://connect.garmin.com/modern'},
         data: {'username': username, 'password': password, 'embed': 'false'},
-        options: Options(headers: {
+        options:
+            Options(contentType: 'application/x-www-form-urlencoded', headers: {
           'origin': 'https://sso.garmin.com',
-          'Content-Type': 'application/x-www-form-urlencoded'
         }));
     if (auth_response.statusCode != 200) {
       throw GarminException('Login credentials not accepted');
