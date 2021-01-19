@@ -8,9 +8,9 @@ environment:
   sdk: '>=2.2.0 <3.0.0'
 
 dependencies:
-  dio: 2.1.13
+  dio: 3.0.10
   cookie_jar: 1.0.0
-  dio_retry: 0.1.8-beta
+  dio_retry: 0.1.9-beta
 
 dev_dependencies:
   pedantic: 1.0.0
