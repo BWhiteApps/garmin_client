@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_retry/dio_retry.dart';
 
 class GarminException implements Exception {
@@ -47,7 +48,8 @@ class GarminClient {
     RegExp exp = RegExp(r'response_url\s*=\s*"(https:[^"]+)"');
     RegExpMatch match = exp.firstMatch(auth_response.data);
     if (match == null) {
-      throw GarminException('No auth ticket URL found. Did you specify correct credentials?');
+      throw GarminException(
+          'No auth ticket URL found. Did you specify correct credentials?');
     }
     String url = match.group(1).replaceAll('\\', '');
 
@@ -83,17 +85,23 @@ class GarminClient {
       if (activityType == '') {
         throw GarminException('Failed to fetch activities');
       } else {
-        throw GarminException('Failed to fetch activities of type $activityType');
+        throw GarminException(
+            'Failed to fetch activities of type $activityType');
       }
     }
   }
 
-  Future<List<int>> _fetch_activities(int index, int batch, String activityType) async {
+  Future<List<int>> _fetch_activities(
+      int index, int batch, String activityType) async {
     List<int> ids = [];
 
     Response response = await dio.get(
         'https://connect.garmin.com/modern/proxy/activitylist-service/activities/search/activities',
-        queryParameters: {'start': index, 'limit': batch, 'activityType': activityType});
+        queryParameters: {
+          'start': index,
+          'limit': batch,
+          'activityType': activityType
+        });
 
     List<dynamic> data = response.data;
     data.forEach((x) => ids.add(x['activityId']));
@@ -109,7 +117,8 @@ class GarminClient {
     bool hadException = false;
 
     try {
-      response = await dio.get('https://connect.garmin.com/modern/proxy/activity-service/activity/$activity_id');
+      response = await dio.get(
+          'https://connect.garmin.com/modern/proxy/activity-service/activity/$activity_id');
     } on DioError {
       hadException = true;
     }
@@ -126,8 +135,8 @@ class GarminClient {
     bool hadException = false;
 
     try {
-      response =
-          await dio.get('https://connect.garmin.com/modern/proxy/activity-service/activity/$activity_id/details');
+      response = await dio.get(
+          'https://connect.garmin.com/modern/proxy/activity-service/activity/$activity_id/details');
     } on DioError {
       hadException = true;
     }
@@ -144,7 +153,8 @@ class GarminClient {
     bool hadException = false;
 
     try {
-      response = await dio.get('https://connect.garmin.com/modern/proxy/activity-service/activity/$activity_id/splits');
+      response = await dio.get(
+          'https://connect.garmin.com/modern/proxy/activity-service/activity/$activity_id/splits');
     } on DioError {
       hadException = true;
     }
@@ -161,14 +171,15 @@ class GarminClient {
     bool hadException = false;
 
     try {
-      response =
-          await dio.get('https://connect.garmin.com/modern/proxy/activity-service/activity/$activity_id/hrTimeInZones');
+      response = await dio.get(
+          'https://connect.garmin.com/modern/proxy/activity-service/activity/$activity_id/hrTimeInZones');
     } on DioError {
       hadException = true;
     }
 
     if (hadException || response.statusCode != 200) {
-      throw GarminException('Failed to get heart rate zones for activity $activity_id');
+      throw GarminException(
+          'Failed to get heart rate zones for activity $activity_id');
     }
 
     return response.data;
