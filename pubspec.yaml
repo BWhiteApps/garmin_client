@@ -9,7 +9,8 @@ environment:
 
 dependencies:
   dio: 3.0.10
-  dio_cookie_manager: ^1.0.0
+  dio_cookie_manager: 1.0.0
+  cookie_jar: 1.0.1
   dio_retry: 0.1.9-beta
 
 dev_dependencies:
