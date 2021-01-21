@@ -77,9 +77,10 @@ class GarminClient {
     }
   }
 
-  Future<List<int>> list_activities([String activityType = '']) async {
+  Future<List<int>> list_activities(
+      [String activityType = '', int numberOfActivities = 10]) async {
     try {
-      return await _fetch_activities(0, 100, activityType);
+      return await _fetch_activities(0, numberOfActivities, activityType);
     } on DioError {
       if (activityType == '') {
         throw GarminException('Failed to fetch activities');
@@ -104,9 +105,6 @@ class GarminClient {
 
     List<dynamic> data = response.data;
     data.forEach((x) => ids.add(x['activityId']));
-    if (data.length == batch) {
-      ids.addAll(await _fetch_activities(index + batch, batch, activityType));
-    }
 
     return ids;
   }
